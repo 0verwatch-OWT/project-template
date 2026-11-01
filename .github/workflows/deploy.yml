@@ -1,0 +1,33 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # lets the job ask GitHub for a short-lived OIDC token
+
+concurrency: deploy
+
+jobs:
+  deploy:
+    # Skipped until bootstrap/ has run and DEPLOY_ROLE_ARN is set.
+    if: vars.DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # The deploy role trusts only the main branch of this repository, so a
+      # run from any other branch is refused here.
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Check the identity
+        run: aws sts get-caller-identity --query UserId --output text
+
+      - name: Deploy
+        run: echo "Replace this step with your deployment."

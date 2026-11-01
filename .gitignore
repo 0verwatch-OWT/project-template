@@ -1,0 +1,19 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Local settings and secrets
+.env
+.env.*
+.claude/settings.local.json
+
+# Python
+__pycache__/
+.venv/
+*.pyc
+
+# Node
+node_modules/
